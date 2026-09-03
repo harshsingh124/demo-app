@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Demo App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 60px auto;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1 { color: #2e7d32; }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background: #1b5e20; }
+    #userList {
+      margin-top: 30px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    #status { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🐳 Docker Demo App</h1>
+  <p>This form saves data to MongoDB running in a container.</p>
+
+  <form id="userForm">
+    <label>Name</label>
+    <input type="text" id="name" required>
+    <label>Email</label>
+    <input type="email" id="email" required>
+    <button type="submit">Save User</button>
+  </form>
+
+  <div id="status"></div>
+
+  <div id="userList">
+    <h3>Saved Users</h3>
+    <ul id="users"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById('userForm');
+    const status = document.getElementById('status');
+    const usersList = document.getElementById('users');
+
+    async function loadUsers() {
+      const res = await fetch('/api/users');
+      const users = await res.json();
+      usersList.innerHTML = users.map(u => `<li>${u.name} — ${u.email}</li>`).join('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+
+      if (res.ok) {
+        status.textContent = '✅ Saved successfully!';
+        form.reset();
+        loadUsers();
+      } else {
+        status.textContent = '❌ Something went wrong.';
+      }
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>
