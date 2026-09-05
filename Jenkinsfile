@@ -24,7 +24,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests... (placeholder for now)' 
-                echo 'Running tests... (testing webhooks for now)' 
+                echo 'Running tests... (testing webhooks  now)' 
             }
         }
     }
