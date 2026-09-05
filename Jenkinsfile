@@ -23,7 +23,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running tests... (placeholder for now)'
+                echo 'Running tests... (placeholder for now)' 
             }
         }
     }
